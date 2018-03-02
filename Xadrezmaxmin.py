@@ -3,21 +3,21 @@ from math import inf
 
 
 
-def alphabeta(borda, profundidade, alpha, beta, maximizacao):
+def alphabeta(no,borda, profundidade, alpha, beta, maximizacao, ):
     if borda.is_checkmate():  # Analisa de a jogada está em checkmate
         return (-40 if maximizacao else 40)
     elif borda.is_game_over():  # Verifica se o jogo acabou devido a checkmate
         return 0
 
-    if profundidade == 0:  # Verifica se a profundidade é zero, caso seja, retorna o tabuleiro
+    if profundidade == 0 or no == 0 :  # Verifica se a profundidade é zero, caso seja, retorna o tabuleiro
         return valorBorda(borda)
 
     if maximizacao:  # Caso maximize for True, entra nessa codição
         melhorValor = - inf  # . Caso for o turno do oponente, o algoritmo guarda o menor (Min) resultado de suas respectivas ramificações.
-        for movimento in borda.legal_moves:  # Se o movimento for válido, copiamos o tabuleiro
+        for movimento in borda.legal_moves: # Se o movimento for válido, copiamos o tabuleiro
             tabuleiroExp = borda.copy()
             tabuleiroExp.push(movimento)  # Aqui analisamos a movimentação da jogada
-            valor = alphabeta(tabuleiroExp, profundidade, alpha, beta, False)
+            valor = max(melhorValor, (alphabeta(no,tabuleiroExp, profundidade, alpha, beta, False)))
             melhorValor = max(melhorValor, valor)
             alpha = max(alpha, melhorValor)
             if(alpha >= beta):
@@ -29,7 +29,7 @@ def alphabeta(borda, profundidade, alpha, beta, maximizacao):
         for movimento in borda.legal_moves:
             tabuleiroExp = borda.copy()
             tabuleiroExp.push(movimento)
-            valor = alphabeta(tabuleiroExp, profundidade - 1,alpha, beta, True)
+            valor = min(melhorValor, (alphabeta(no,tabuleiroExp, profundidade - 1,alpha, beta, True)))
             melhorValor = min(melhorValor, valor)
             beta = min(beta, melhorValor)
             if alpha >= beta:
@@ -75,7 +75,7 @@ if __name__ == "__main__":
         for movimento in tabuleiro.legal_moves:
             tabuleiroExp = tabuleiro.copy()
             tabuleiroExp.push(movimento)
-            valor = alphabeta(tabuleiroExp, 2, - inf, inf, False)
+            valor = alphabeta(0,tabuleiroExp, 12, - inf, inf, False)
 
             if valor < minValor:
                 minValor = valor
